@@ -18,7 +18,7 @@ HTML_TEMPLATE = """
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -28,7 +28,7 @@ HTML_TEMPLATE = """
             align-items: center;
             padding: 20px;
         }
-        
+
         .container {
             background: white;
             border-radius: 20px;
@@ -38,19 +38,19 @@ HTML_TEMPLATE = """
             width: 100%;
             text-align: center;
         }
-        
+
         h1 {
             color: #333;
             margin-bottom: 10px;
             font-size: 2.5em;
         }
-        
+
         .subtitle {
             color: #666;
             margin-bottom: 30px;
             font-size: 1.1em;
         }
-        
+
         .image-container {
             margin: 30px 0;
             min-height: 400px;
@@ -61,19 +61,19 @@ HTML_TEMPLATE = """
             border-radius: 15px;
             overflow: hidden;
         }
-        
+
         #dogImage {
             max-width: 100%;
             max-height: 400px;
             border-radius: 10px;
             object-fit: cover;
         }
-        
+
         .loading {
             color: #667eea;
             font-size: 1.2em;
         }
-        
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -83,12 +83,12 @@ HTML_TEMPLATE = """
             animation: spin 1s linear infinite;
             margin: 0 auto 15px;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -101,21 +101,21 @@ HTML_TEMPLATE = """
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             font-weight: 600;
         }
-        
+
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
-        
+
         button:active {
             transform: translateY(0);
         }
-        
+
         button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
-        
+
         .error {
             color: #e74c3c;
             padding: 15px;
@@ -124,7 +124,7 @@ HTML_TEMPLATE = """
             margin-top: 20px;
             display: none;
         }
-        
+
         .error.show {
             display: block;
         }
@@ -134,35 +134,35 @@ HTML_TEMPLATE = """
     <div class="container">
         <h1>🐕 Dog Image Fetcher</h1>
         <p class="subtitle">Click the button to fetch a random dog image</p>
-        
+
         <div class="image-container">
             <div id="content">
                 <p style="color: #999;">No image loaded yet. Click the button below!</p>
             </div>
         </div>
-        
+
         <button id="fetchBtn" onclick="fetchDogImage()">Fetch Dog Image</button>
-        
+
         <div class="error" id="errorMsg"></div>
     </div>
-    
+
     <script>
         async function fetchDogImage() {
             const button = document.getElementById('fetchBtn');
             const content = document.getElementById('content');
             const errorMsg = document.getElementById('errorMsg');
-            
+
             // Clear previous error
             errorMsg.classList.remove('show');
-            
+
             // Disable button and show loading state
             button.disabled = true;
             content.innerHTML = '<div class="spinner"></div><p class="loading">Fetching a random dog...</p>';
-            
+
             try {
                 const response = await fetch('/fetch-dog');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // Display the image
                     const img = document.createElement('img');
@@ -206,20 +206,20 @@ def fetch_dog():
     try:
         # Call the fetch_random_dog function from dog.py
         fetch_random_dog()
-        
+
         # Read the image and get its URL from the API response
         # Since fetch_random_dog doesn't return the URL, we'll call the API directly
         import requests
         from dog import API_KEY
-        
+
         url = "https://api.thedogapi.com/v1/images/search"
         headers = {
             "x-api-key": API_KEY
         }
-        
+
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        
+
         data = response.json()
         if data:
             image_url = data[0]["url"]
@@ -232,7 +232,7 @@ def fetch_dog():
                 "success": False,
                 "error": "No image data received from API"
             })
-            
+
     except Exception as e:
         return jsonify({
             "success": False,
@@ -240,4 +240,4 @@ def fetch_dog():
         })
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True)
